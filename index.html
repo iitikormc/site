@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCSkins - Minecraft Skin Viewer & Gallery</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Pixel/Minecraft Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mc: {
+                            green: '#55ff55',
+                            darkgreen: '#2d8e2d',
+                            dirt: '#866043',
+                            stone: '#595959',
+                            darkstone: '#2c2c2c',
+                            redstone: '#ff2222',
+                            gold: '#ffaa00',
+                            diamond: '#55ffff'
+                        }
+                    },
+                    fontFamily: {
+                        pixel: ['"Press Start 2P"', 'monospace'],
+                        vt: ['"VT323"', 'monospace'],
+                        sans: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            background-image: radial-gradient(#2c2c2c 1px, transparent 1px);
+            background-size: 16px 16px;
+            color: #ffffff;
+        }
+
+        .pixel-border {
+            border: 4px solid #000000;
+            box-shadow: inset -4px -4px 0px 0px #3a3a3a, inset 4px 4px 0px 0px #8b8b8b;
+        }
+
+        .pixel-btn {
+            border: 3px solid #000;
+            box-shadow: inset -3px -3px 0px 0px #1e561e, inset 3px 3px 0px 0px #70ff70;
+            transition: all 0.1s ease;
+        }
+
+        .pixel-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .pixel-btn:active {
+            transform: translateY(2px);
+            box-shadow: inset 3px 3px 0px 0px #1e561e, inset -3px -3px 0px 0px #70ff70;
+        }
+
+        /* Rendering crisp pixelated skin textures */
+        .pixelated {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Header Section -->
+    <header class="bg-mc-darkstone border-b-4 border-black py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+                <!-- Custom Logo generated based on provided red star logo -->
+                <div class="w-12 h-12 rounded-full bg-red-700 border-2 border-white flex items-center justify-center overflow-hidden shadow-lg">
+                    <svg viewBox="0 0 100 100" class="w-10 h-10">
+                        <circle cx="50" cy="50" r="48" fill="#a81c1c" />
+                        <path d="M 25 25 L 55 25 L 55 35 L 35 35 L 35 55 L 45 55 L 45 45 L 65 45 L 65 75 L 25 75 Z" fill="#ffffff" />
+                        <polygon points="65,30 73,50 95,50 77,63 84,83 65,70 46,83 53,63 35,50 57,50" fill="#ffffff" stroke="#a81c1c" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-pixel text-mc-green tracking-wider">MC<span class="text-mc-diamond">SKINS</span></h1>
+                    <p class="text-xs text-gray-400 font-vt tracking-widest">MINECRAFT SKIN VIEWER & GALLERY</p>
+                </div>
+            </div>
+
+            <!-- YouTube Channel Link Button -->
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" 
+               class="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded border-2 border-black shadow-md transition duration-200">
+                <i class="fab font-bold fa-youtube text-xl"></i>
+                <span>Visit My Channel</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-grow space-y-12">
+
+        <!-- Skin Search & Interactive Viewer Section -->
+        <section class="bg-mc-darkstone pixel-border p-6 rounded-lg">
+            <h2 class="text-xl font-pixel text-mc-gold mb-4 text-center sm:text-left flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass"></i> Search Minecraft Skin
+            </h2>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input type="text" id="usernameInput" placeholder="Enter Minecraft Username (e.g. Notch, Alex)" 
+                       class="flex-grow bg-black border-2 border-mc-stone p-3 text-white font-mono focus:outline-none focus:border-mc-green rounded">
+                <button onclick="fetchSkin()" class="bg-mc-darkgreen hover:bg-mc-green text-white font-pixel py-3 px-6 pixel-btn">
+                    GET SKIN
+                </button>
+            </div>
+
+            <!-- Skin Display Box -->
+            <div id="skinDisplayContainer" class="mt-6 p-6 bg-black/50 border-2 border-dashed border-mc-stone rounded-lg flex flex-col items-center justify-center min-h-[220px]">
+                <div id="skinPreview" class="flex flex-col sm:flex-row items-center gap-8">
+                    <img id="avatarHead" src="https://mc-heads.net/avatar/steve/100" alt="Head Preview" class="w-24 h-24 pixelated drop-shadow-lg">
+                    <img id="avatarBody" src="https://mc-heads.net/body/steve/180" alt="Body Preview" class="h-44 pixelated drop-shadow-lg">
+                    <div class="text-center sm:text-left space-y-3">
+                        <h3 id="skinUsername" class="text-2xl font-pixel text-mc-diamond">Steve</h3>
+                        <p class="text-sm text-gray-400">Status: <span class="text-mc-green">Loaded</span></p>
+                        <a id="downloadBtn" href="https://mc-heads.net/download/steve" target="_blank" 
+                           class="inline-block bg-mc-gold hover:bg-yellow-500 text-black font-pixel text-xs py-2 px-4 pixel-btn">
+                            DOWNLOAD SKIN
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custom Skins Gallery Section -->
+        <section class="space-y-6">
+            <div class="border-b-2 border-mc-stone pb-2">
+                <h2 class="text-2xl font-pixel text-mc-green flex items-center gap-2">
+                    <i class="fa-solid fa-[#55ff55] fa-boxes-stacked"></i> My Custom Skins Gallery
+                </h2>
+                <p class="text-gray-400 text-sm mt-1">Browse and download exclusive custom skins</p>
+            </div>
+
+            <!-- Skins Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Skin Card 1 -->
+                <div class="bg-mc-darkstone border-2 border-black rounded-lg p-4 flex flex-col items-center hover:border-mc-green transition duration-300 shadow-xl">
+                    <div class="bg-black/60 w-full py-4 flex justify-center items-center rounded border border-gray-800 mb-4 h-48">
+                        <img src="AguXxXGamer.png" alt="AguXxXGamer Skin" class="h-40 pixelated object-contain" onerror="this.src='https://mc-heads.net/body/steve/160'">
+                    </div>
+                    <h3 class="font-pixel text-sm text-white mb-1">AguXxXGamer</h3>
+                    <span class="text-xs text-mc-gold mb-3">Custom Hoodie Skin</span>
+                    <a href="AguXxXGamer.png" download="AguXxXGamer.png" class="w-full text-center bg-mc-darkgreen hover:bg-mc-green text-white font-pixel text-xs py-2 px-3 pixel-btn">
+                        DOWNLOAD
+                    </a>
+                </div>
+
+                <!-- Skin Card 2 -->
+                <div class="bg-mc-darkstone border-2 border-black rounded-lg p-4 flex flex-col items-center hover:border-mc-green transition duration-300 shadow-xl">
+                    <div class="bg-black/60 w-full py-4 flex justify-center items-center rounded border border-gray-800 mb-4 h-48">
+                        <img src="babe38e323353a19.png" alt="Dark Style Skin" class="h-40 pixelated object-contain" onerror="this.src='https://mc-heads.net/body/alex/160'">
+                    </div>
+                    <h3 class="font-pixel text-sm text-white mb-1">Black Coat Edition</h3>
+                    <span class="text-xs text-mc-gold mb-3">Dark Trendy Outfit</span>
+                    <a href="babe38e323353a19.png" download="babe38e323353a19.png" class="w-full text-center bg-mc-darkgreen hover:bg-mc-green text-white font-pixel text-xs py-2 px-3 pixel-btn">
+                        DOWNLOAD
+                    </a>
+                </div>
+
+                <!-- Skin Card 3 -->
+                <div class="bg-mc-darkstone border-2 border-black rounded-lg p-4 flex flex-col items-center hover:border-mc-green transition duration-300 shadow-xl">
+                    <div class="bg-black/60 w-full py-4 flex justify-center items-center rounded border border-gray-800 mb-4 h-48">
+                        <img src="Hacker.png" alt="Hacker Skin" class="h-40 pixelated object-contain" onerror="this.src='https://mc-heads.net/body/steve/160'">
+                    </div>
+                    <h3 class="font-pixel text-sm text-white mb-1">Creeper Hacker</h3>
+                    <span class="text-xs text-mc-gold mb-3">Anonymous Creeper</span>
+                    <a href="Hacker.png" download="Hacker.png" class="w-full text-center bg-mc-darkgreen hover:bg-mc-green text-white font-pixel text-xs py-2 px-3 pixel-btn">
+                        DOWNLOAD
+                    </a>
+                </div>
+
+                <!-- Skin Card 4 -->
+                <div class="bg-mc-darkstone border-2 border-black rounded-lg p-4 flex flex-col items-center hover:border-mc-green transition duration-300 shadow-xl">
+                    <div class="bg-black/60 w-full py-4 flex justify-center items-center rounded border border-gray-800 mb-4 h-48">
+                        <img src="809843bd9552caca.png" alt="Aesthetic Skin" class="h-40 pixelated object-contain" onerror="this.src='https://mc-heads.net/body/alex/160'">
+                    </div>
+                    <h3 class="font-pixel text-sm text-white mb-1">Vintage Casual</h3>
+                    <span class="text-xs text-mc-gold mb-3">Aesthetic Brown Theme</span>
+                    <a href="809843bd9552caca.png" download="809843bd9552caca.png" class="w-full text-center bg-mc-darkgreen hover:bg-mc-green text-white font-pixel text-xs py-2 px-3 pixel-btn">
+                        DOWNLOAD
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t-4 border-mc-stone py-6 text-center text-gray-500 text-sm">
+        <p class="font-pixel text-xs text-mc-stone mb-2">MCSKINS &copy; 2026 - ALL RIGHTS RESERVED</p>
+        <p class="text-xs">Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.</p>
+    </footer>
+
+    <!-- JavaScript for Live Skin Search -->
+    <script>
+        function fetchSkin() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username === '') {
+                alert('Please enter a valid Minecraft username!');
+                return;
+            }
+
+            const headUrl = `https://mc-heads.net/avatar/${username}/100`;
+            const bodyUrl = `https://mc-heads.net/body/${username}/180`;
+            const downloadUrl = `https://mc-heads.net/download/${username}`;
+
+            document.getElementById('avatarHead').src = headUrl;
+            document.getElementById('avatarBody').src = bodyUrl;
+            document.getElementById('skinUsername').innerText = username;
+            document.getElementById('downloadBtn').href = downloadUrl;
+        }
+    </script>
+</body>
+</html>
